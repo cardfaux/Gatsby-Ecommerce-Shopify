@@ -1,8 +1,24 @@
-import React, { useState } from "react"
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
+import React, { useState, useLayoutEffect } from "react"
 import Img from "gatsby-image"
+import ShopifyBuy from "@shopify/buy-button-js"
 
 const ProductDetail = ({ product }) => {
   const [selectedVariant, setVariant] = useState(product.variants[0])
+
+  useLayoutEffect(() => {
+    const client = ShopifyBuy.buildClient({
+      domain: "gatsbyapi",
+      storefrontAccessToken: process.env.TOKEN,
+    })
+    const ui = ShopifyBuy.UI.init(client)
+    console.log("ui", ui)
+
+    return () => {}, []
+  })
 
   return (
     <div>
@@ -11,6 +27,7 @@ const ProductDetail = ({ product }) => {
       <p>{product.description}</p>
       <p>${selectedVariant.price}</p>
       <select
+        onBlur={""}
         onChange={e => {
           const selected = product.variants.filter(
             variant => variant.sku === e.target.value
